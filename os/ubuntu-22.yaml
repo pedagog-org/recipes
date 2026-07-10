@@ -1,0 +1,44 @@
+id: ubuntu-22
+upstream: ubuntu:22.04
+image: pedagog/ubuntu:22
+pkg_manager: apt
+
+hooks:
+  init:
+    run:
+      - apt-get update && apt-get upgrade -y
+      - apt-get install -y ca-certificates gosu iptables
+      - useradd -m -s /bin/bash student
+      - mkdir -p /home/student/workspace
+      - chown -R student:student /home/student
+
+  pkg:
+    install:
+      params:
+        - packages: list<string>
+      run:
+        - apt-get install -y {packages}
+    remove:
+      params:
+        - packages: list<string>
+      run:
+        - apt-get remove --purge -y {packages}
+
+  network:
+    transcribe:
+      params:
+        - rules: list<string>
+      run:
+        - iptables -F OUTPUT
+        - iptables -P OUTPUT DROP
+        - iptables -A OUTPUT -o lo -j ACCEPT
+        - iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        - for cidr in {rules}; do iptables -A OUTPUT -d "$cidr" -j ACCEPT; done
+        - iptables-save > /etc/pedagog/network.rules
+    enable:
+      run:
+        - iptables-restore < /etc/pedagog/network.rules
+    disable:
+      run:
+        - iptables -F
+        - iptables -P OUTPUT ACCEPT

@@ -1,0 +1,8 @@
+id: rust
+version: "1.79"
+os: ubuntu-22
+steps:
+  - name: Install Rust 1.79 via rustup
+    run:
+      - curl -fsSL https://sh.rustup.rs | sh -s -- -y --default-toolchain 1.79.0 --profile minimal
+      - /root/.cargo/bin/rustup component add clippy rustfmt

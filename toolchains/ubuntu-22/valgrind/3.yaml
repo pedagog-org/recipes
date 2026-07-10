@@ -1,0 +1,7 @@
+id: valgrind
+version: "3"
+os: ubuntu-22
+steps:
+  - name: Install valgrind
+    packages:
+      - valgrind

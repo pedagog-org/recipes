@@ -1,0 +1,7 @@
+id: gdb
+version: "14"
+os: ubuntu-22
+steps:
+  - name: Install gdb
+    packages:
+      - gdb

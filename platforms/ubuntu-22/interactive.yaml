@@ -1,0 +1,30 @@
+id: interactive
+os: ubuntu-22
+steps:
+  - name: Install code-server
+    run:
+      - curl -fsSL https://code-server.dev/install.sh | sh
+  - name: Write base policy.json
+    run:
+      - mkdir -p /etc/vscode
+      - |
+        cat > /etc/vscode/policy.json << 'EOF'
+        {
+          "ChatPluginsEnabled": false,
+          "Claude3PIntegration": false,
+          "Codex3PIntegration": false,
+          "ChatAgentMode": false,
+          "EnableTelemetry": false,
+          "TelemetryLevel": "off",
+          "UpdateMode": "none",
+          "EnableFeedback": false
+        }
+        EOF
+  - name: Remove unwanted built-in extensions
+    run:
+      - rm -rf /usr/lib/code-server/lib/vscode/extensions/tunnel-forwarding
+      - rm -rf /usr/lib/code-server/lib/vscode/extensions/simple-browser
+      - rm -rf /usr/lib/code-server/lib/vscode/extensions/github
+      - rm -rf /usr/lib/code-server/lib/vscode/extensions/github-authentication
+      - rm -rf /usr/lib/code-server/lib/vscode/extensions/copilot
+      - rm -rf /usr/lib/code-server/lib/vscode/extensions/terminal-suggest

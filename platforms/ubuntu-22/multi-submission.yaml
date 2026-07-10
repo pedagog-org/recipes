@@ -1,0 +1,7 @@
+id: multi-submission
+os: ubuntu-22
+steps:
+  - name: Create submission directories
+    run:
+      - mkdir -p /pedagog/results
+      - mkdir -p /pedagog/workspace

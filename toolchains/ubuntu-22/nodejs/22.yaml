@@ -1,0 +1,10 @@
+id: nodejs
+version: "22"
+os: ubuntu-22
+steps:
+  - name: Add NodeSource repository
+    run:
+      - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  - name: Install Node.js 22
+    packages:
+      - nodejs
