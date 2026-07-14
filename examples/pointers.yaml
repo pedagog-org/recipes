@@ -1,0 +1,13 @@
+id: pointers-and-memory
+name: Pointers and Memory
+environment:
+  os: ubuntu-22
+  platform:
+    kind: interactive
+    params:
+      extensions:
+        install:
+          - llvm-vs-code-extensions.vscode-clangd
+  toolchains:
+    - gcc:12
+    - clangd:14
