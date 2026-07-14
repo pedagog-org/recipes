@@ -3,40 +3,42 @@ upstream: ubuntu:22.04
 image: pedagog/ubuntu:22
 
 hooks:
-  init:
-    steps:
+  build:
+    init:
       - run:
           - apt-get update && apt-get upgrade -y
-          - apt-get install -y ca-certificates gosu iptables
+          - apt-get install -y ca-certificates curl gosu iptables jq
           - useradd -m -s /bin/bash student
           - mkdir -p /home/student/workspace
           - chown -R student:student /home/student
+          - install -m755 /pedagog/recipes/lib/vend /usr/local/bin/vend
+    cleanup:
+      - run:
+          - apt-get clean
+          - rm -rf /var/lib/apt/lists/*
 
   pkg:
     install:
-      params:
-        - packages: "gcc-13 g++-13"
+      args: [packages]
       steps:
         - run:
             - apt-get install -y {packages}
     remove:
-      params:
-        - packages: "gcc-13 g++-13"
+      args: [packages]
       steps:
         - run:
             - apt-get remove --purge -y {packages}
 
   network:
     transcribe:
-      params:
-        - rules: "192.168.1.0/24 10.0.0.0/8"
+      args: [cidrs]
       steps:
         - run:
             - iptables -F OUTPUT
             - iptables -P OUTPUT DROP
             - iptables -A OUTPUT -o lo -j ACCEPT
             - iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-            - for cidr in {rules}; do iptables -A OUTPUT -d "$cidr" -j ACCEPT; done
+            - for cidr in {cidrs}; do iptables -A OUTPUT -d "$cidr" -j ACCEPT; done
             - iptables-save > /etc/pedagog/network.rules
     enable:
       steps:
