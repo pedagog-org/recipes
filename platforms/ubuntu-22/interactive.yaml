@@ -1,24 +1,48 @@
 platform: interactive
 os: ubuntu-22
 
-params:
-  terminal: true
-  ai: false
-  extensions:
-    install: []
-    allow: []
+ingredients:
+  - output: code-server.deb
+    github:
+      repo: pedagog-org/code-server
+      asset: "code-server_*_arm64.deb"
+      tag: v4.127.0-pedagog.1
 
 hooks:
   build:
+    params:
+      terminal:
+        type: bool
+        default: true
+        info: "whether to enable terminal access for students"
+      ai:
+        type: bool
+        default: false
+        info: "whether to enable AI features in code-server"
+      extensions:
+        type: map
+        info: "VS Code extension configuration"
+        properties:
+          install:
+            type: list
+            default: []
+            info: "extension IDs to install at build time"
+          allow:
+            type: list
+            default: []
+            info: "additional extension IDs to permit at runtime"
     steps:
       - name: Install code-server
         run:
           - |
-            if [ -n "$DEV" ]; then
-              dpkg -i /pedagog/dev/code-server.deb
+            CS_VER=4.127.0-pedagog.1
+            if [ -f "$(vend code-server.deb)" ]; then
+              dpkg -i "$(vend code-server.deb)"
             else
-              curl -fsSL https://github.com/pedagog-org/code-server/releases/latest/download/code-server_arm64.deb \
-                -o /tmp/code-server.deb && dpkg -i /tmp/code-server.deb
+              curl -fsSL "https://github.com/pedagog-org/code-server/releases/download/v${CS_VER}/code-server_${CS_VER}_arm64.deb" \
+                -o /tmp/code-server.deb && \
+              dpkg -i /tmp/code-server.deb && \
+              rm /tmp/code-server.deb
             fi
       - name: Remove built-in extensions
         run:
@@ -28,4 +52,51 @@ hooks:
           - rm -rf /usr/lib/code-server/lib/vscode/extensions/github-authentication
           - rm -rf /usr/lib/code-server/lib/vscode/extensions/copilot
           - rm -rf /usr/lib/code-server/lib/vscode/extensions/terminal-suggest
-  entrypoint: /usr/bin/code-server --bind-addr 0.0.0.0:8080
+      - name: Install extensions
+        run:
+          - |
+            mkdir -p /home/student/.local/share/code-server/extensions
+            for ext in {extensions.install}; do
+              code-server --extensions-dir /home/student/.local/share/code-server/extensions --install-extension "$ext"
+            done
+            chown -R student:student /home/student/.local/share/code-server/extensions
+      - name: Write policy
+        run:
+          - |
+            mkdir -p /etc/vscode
+            jq -n --argjson exts '{extensions.install+extensions.allow:json}' '
+              {{
+                "AllowedExtensions": ($exts | map({{(.): true}}) | add // {{}}),
+                "DisableAIFeatures": ({ai} | not),
+                "ChatPluginsEnabled": {ai},
+                "Claude3PIntegration": {ai},
+                "Codex3PIntegration": {ai},
+                "ChatAgentMode": {ai},
+                "TelemetryLevel": "off",
+                "UpdateMode": "none",
+                "EnableFeedback": false
+              }}
+            ' > /etc/vscode/policy.json
+      - name: Write machine settings
+        run:
+          - |
+            mkdir -p /home/student/.local/share/code-server/Machine
+            mkdir -p /home/student/.local/share/code-server/extensions
+            mkdir -p /home/student/.local/share/code-server/User
+            tee /home/student/.local/share/code-server/Machine/settings.json << 'SETTINGS'
+            {{
+              "extensions.autoUpdate": false,
+              "extensions.autoCheckUpdates": false,
+              "workbench.startupEditor": "none",
+              "workbench.tips.enabled": false,
+              "workbench.welcomePage.walkthroughs.openOnInstall": false
+            }}
+            SETTINGS
+            chown -R student:student /home/student/.local
+      - name: Configure terminal access
+        run:
+          - |
+            if [ "{terminal}" = "false" ]; then
+              usermod -s /usr/sbin/nologin student
+            fi
+  entrypoint: /usr/bin/code-server --bind-addr 0.0.0.0:8080 --auth none --disable-file-downloads --disable-file-uploads --disable-update-check --disable-workspace-trust /home/student/workspace
