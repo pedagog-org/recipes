@@ -1,0 +1,11 @@
+id: clangd
+version: "14"
+os: ubuntu-22
+
+steps:
+  - name: Install clangd 14
+    packages:
+      - clangd-14
+  - name: Set as default clangd
+    run:
+      - update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-14 100

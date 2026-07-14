@@ -1,0 +1,15 @@
+id: gcc
+version: "12"
+os: ubuntu-22
+steps:
+  - name: Install gcc 12
+    packages:
+      - gcc-12
+      - g++-12
+  - name: Set as default compiler
+    run:
+      - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
+      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
+addons:
+  - gdb:14
+  - valgrind:3
