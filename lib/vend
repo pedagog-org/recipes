@@ -1,0 +1,5 @@
+#!/bin/sh
+# Returns the path to a vendored ingredient by filename.
+# Reads PEDAGOG_TYPE and PEDAGOG_ID from the environment, which hammer sets
+# via ENV instructions before each recipe section's steps.
+echo "/pedagog/ingredients/${PEDAGOG_TYPE}/${PEDAGOG_ID}/$1"
