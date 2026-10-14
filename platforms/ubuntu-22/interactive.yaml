@@ -11,6 +11,10 @@ ingredients:
 hooks:
   build:
     params:
+      port:
+        type: int
+        default: 8080
+        info: "port code-server listens on"
       terminal:
         type: bool
         default: true
@@ -99,4 +103,15 @@ hooks:
             if [ "{terminal}" = "false" ]; then
               usermod -s /usr/sbin/nologin student
             fi
-  entrypoint: /usr/bin/code-server --bind-addr 0.0.0.0:8080 --auth none --disable-file-downloads --disable-file-uploads --disable-update-check --disable-workspace-trust /home/student/workspace
+  entrypoint:
+    - /usr/bin/code-server
+    - --bind-addr
+    - "0.0.0.0:{port}"
+    - --auth
+    - none
+    - --disable-file-downloads
+    - --disable-file-uploads
+    - --disable-update-check
+    - --disable-workspace-trust
+    - /home/student/workspace
+  ports: ["{port}"]
