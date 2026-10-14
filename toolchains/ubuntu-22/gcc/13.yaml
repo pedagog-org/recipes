@@ -19,5 +19,5 @@ steps:
     run:
       - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 addons:
-  gdb: ["14"]
+  gdb: ["12"]
   valgrind: ["3"]
