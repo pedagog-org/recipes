@@ -1,15 +1,25 @@
 id: gcc
 version: "13"
 os: ubuntu-22
+# Installs versioned binaries (gcc-13, g++-13) and registers them with
+# update-alternatives, so other gcc versions can be installed alongside.
+# Alternative priority = version, so the newest installed gcc is the default.
+coexist: true
 steps:
+  - name: Install add-apt-repository
+    packages:
+      - software-properties-common
+  - name: Add ubuntu-toolchain-r PPA (gcc 13 isn't in jammy's archive)
+    run:
+      - add-apt-repository -y ppa:ubuntu-toolchain-r/test
+      - apt-get update
   - name: Install gcc 13
     packages:
       - gcc-13
       - g++-13
-  - name: Set as default compiler
+  - name: Register gcc 13 with update-alternatives
     run:
-      - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100
-      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+      - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 addons:
-  - gdb:14
-  - valgrind:3
+  gdb: ["12"]
+  valgrind: ["3"]

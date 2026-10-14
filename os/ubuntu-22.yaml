@@ -6,8 +6,11 @@ hooks:
   build:
     init:
       - run:
+          # Persisted in the debconf db, so no later apt step can block on a prompt
+          # (e.g. tzdata asking for a time zone).
+          - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
           - apt-get update && apt-get upgrade -y
-          - apt-get install -y ca-certificates curl gosu iptables jq
+          - apt-get install -y ca-certificates curl jq
           - useradd -m -s /bin/bash student
           - mkdir -p /home/student/workspace
           - chown -R student:student /home/student
@@ -29,23 +32,3 @@ hooks:
         - run:
             - apt-get remove --purge -y {packages}
 
-  network:
-    transcribe:
-      args: [cidrs]
-      steps:
-        - run:
-            - iptables -F OUTPUT
-            - iptables -P OUTPUT DROP
-            - iptables -A OUTPUT -o lo -j ACCEPT
-            - iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-            - for cidr in {cidrs}; do iptables -A OUTPUT -d "$cidr" -j ACCEPT; done
-            - iptables-save > /etc/pedagog/network.rules
-    enable:
-      steps:
-        - run:
-            - iptables-restore < /etc/pedagog/network.rules
-    disable:
-      steps:
-        - run:
-            - iptables -F
-            - iptables -P OUTPUT ACCEPT

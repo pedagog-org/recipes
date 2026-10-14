@@ -1,5 +1,6 @@
 id: gdb
-version: "14"
+# jammy's archive ships gdb 12.1.
+version: "12"
 os: ubuntu-22
 steps:
   - name: Install gdb

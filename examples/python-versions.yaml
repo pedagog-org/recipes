@@ -1,0 +1,25 @@
+# Students make a package work on Python 3.11 and 3.12. Both python recipes set
+# `coexist: true`: python3.11 and python3.12 are both on PATH, `python3`
+# resolves to 3.12 (the newest), and the system /usr/bin/python3 is untouched.
+id: python-versions
+name: Python Version Compatibility
+environment:
+  os: ubuntu-22
+  platform:
+    kind: interactive
+    params:
+      extensions:
+        install:
+          - ms-python.python
+  toolchains:
+    - python:3.11
+    - id: python
+      version: "3.12"
+  steps:
+    - name: Create a venv per interpreter
+      run:
+        - |
+          for v in 3.11 3.12; do
+            python$v -m venv /home/student/workspace/.venv-$v
+          done
+          chown -R student:student /home/student/workspace
