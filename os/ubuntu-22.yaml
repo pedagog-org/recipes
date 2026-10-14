@@ -12,6 +12,10 @@ hooks:
           - apt-get update && apt-get upgrade -y
           - apt-get install -y ca-certificates curl jq
           - useradd -m -s /bin/bash student
+          # Test runs: grader owns the hidden tests/solution and runs the harness;
+          # runner executes student code under process isolation. Fixed system uids.
+          - useradd -r -M -u 900 -s /usr/sbin/nologin grader
+          - useradd -r -M -u 901 -s /usr/sbin/nologin runner
           - mkdir -p /home/student/workspace
           - chown -R student:student /home/student
           - install -m755 /pedagog/recipes/lib/vend /usr/local/bin/vend
