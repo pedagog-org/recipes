@@ -59,11 +59,16 @@ hooks:
       - name: Install extensions
         run:
           - |
-            mkdir -p /home/student/.local/share/code-server/extensions
+            mkdir -p /var/lib/code-server/extensions
             for ext in {extensions.install}; do
-              code-server --extensions-dir /home/student/.local/share/code-server/extensions --install-extension "$ext"
+              code-server --extensions-dir /var/lib/code-server/extensions --install-extension "$ext"
             done
-            chown -R student:student /home/student/.local/share/code-server/extensions
+            # code-server expects the manifest; it can't create one in a read-only dir.
+            [ -f /var/lib/code-server/extensions/extensions.json ] || printf '[]' > /var/lib/code-server/extensions/extensions.json
+            # Root-owned and read-only, so students can't add, remove or modify
+            # extensions on disk (AllowedExtensions policy limits what may run).
+            chown -R root:root /var/lib/code-server/extensions
+            chmod -R a=rX /var/lib/code-server/extensions
       - name: Write policy
         run:
           - |
@@ -85,7 +90,6 @@ hooks:
         run:
           - |
             mkdir -p /home/student/.local/share/code-server/Machine
-            mkdir -p /home/student/.local/share/code-server/extensions
             mkdir -p /home/student/.local/share/code-server/User
             tee /home/student/.local/share/code-server/Machine/settings.json << 'SETTINGS'
             {{
@@ -113,5 +117,7 @@ hooks:
     - --disable-file-uploads
     - --disable-update-check
     - --disable-workspace-trust
+    - --extensions-dir
+    - /var/lib/code-server/extensions
     - /home/student/workspace
   ports: ["{port}"]
