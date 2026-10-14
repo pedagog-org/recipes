@@ -6,6 +6,9 @@ hooks:
   build:
     init:
       - run:
+          # Persisted in the debconf db, so no later apt step can block on a prompt
+          # (e.g. tzdata asking for a time zone).
+          - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
           - apt-get update && apt-get upgrade -y
           - apt-get install -y ca-certificates curl jq
           - useradd -m -s /bin/bash student

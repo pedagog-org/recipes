@@ -6,9 +6,11 @@ os: ubuntu-22
 # Alternative priority = version, so the newest installed gcc is the default.
 coexist: true
 steps:
+  - name: Install add-apt-repository
+    packages:
+      - software-properties-common
   - name: Add ubuntu-toolchain-r PPA (gcc 13 isn't in jammy's archive)
     run:
-      - apt-get install -y software-properties-common
       - add-apt-repository -y ppa:ubuntu-toolchain-r/test
       - apt-get update
   - name: Install gcc 13

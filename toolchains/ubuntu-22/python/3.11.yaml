@@ -7,9 +7,11 @@ os: ubuntu-22
 # alongside; alternative priority = version, so the newest is the default.
 coexist: true
 steps:
+  - name: Install add-apt-repository
+    packages:
+      - software-properties-common
   - name: Add deadsnakes PPA
     run:
-      - apt-get install -y software-properties-common
       - add-apt-repository -y ppa:deadsnakes/ppa
       - apt-get update
   - name: Install Python 3.11
