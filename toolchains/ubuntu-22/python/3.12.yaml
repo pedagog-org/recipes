@@ -6,6 +6,8 @@ os: ubuntu-22
 # /usr/bin/python3 is never touched. Other python versions can be installed
 # alongside; alternative priority = version, so the newest is the default.
 coexist: true
+addons:
+  pedagog-pytest: ["1"]
 steps:
   - name: Install add-apt-repository
     packages:
