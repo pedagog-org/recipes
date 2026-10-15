@@ -1,0 +1,15 @@
+# A Python assignment with hidden tests: students implement LinkedList in
+# starter/linked_list.py; tests/ run against solution/ at build time to
+# validate the assignment, and against student work at grading time.
+# Student code runs in its own process as the `runner` user (isolation:
+# process is the default), so it can't read the tests.
+id: linked-list-python
+name: Linked List (Python)
+environment:
+  os: ubuntu-22
+  platform:
+    kind: interactive
+  toolchains:
+    - python:3.12
+testing:
+  framework: pytest:1
