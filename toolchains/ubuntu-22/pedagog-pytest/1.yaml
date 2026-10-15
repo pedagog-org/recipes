@@ -7,6 +7,7 @@ os: ubuntu-22
 # the system site-packages, using the python3 its parent toolchain put on PATH.
 ingredients:
   - output: pedagog-pytest-bundle.tar.gz
+    sha256: 79432db58299b5e748d3707b9a08f7253b53f99c07c7ac4a33762cd35def1b83
     github:
       repo: pedagog-org/python-pytest
       asset: "pedagog-pytest-*-bundle.tar.gz"
