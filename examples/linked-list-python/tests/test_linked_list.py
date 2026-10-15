@@ -30,7 +30,7 @@ def test_len():
 class PopFront(Rubric):
     returns_front: Score = item("returns values from the front", points=2)
     raises_when_empty: Score = item("raises IndexError when empty", points=1)
-    reusable: Score = item("the list still works after being emptied", points=1, extra_credit=True)
+    reusable: Score = item("the list still works after being emptied", points=1)
 
 
 @rubric(PopFront)
