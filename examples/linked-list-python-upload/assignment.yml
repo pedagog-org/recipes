@@ -1,0 +1,16 @@
+# linked-list-python on the upload platform: students upload linked_list.py
+# (or an archive of it) instead of working in a session. Same tests and
+# solution; tests/ run against solution/ at build time to validate the
+# assignment, and against each submission at grading time.
+# Student code runs in its own process as the `runner` user (isolation:
+# process is the default), so it can't read the tests.
+id: linked-list-python-upload
+name: Linked List (Python, upload)
+environment:
+  os: ubuntu-22
+  platform:
+    kind: upload
+  toolchains:
+    - python:3.12
+testing:
+  framework: pytest:1

@@ -1,4 +1,4 @@
-platform: interactive
+platform: workspace
 os: ubuntu-22
 
 ingredients:
@@ -16,6 +16,10 @@ hooks:
         type: int
         default: 8080
         info: "port code-server listens on"
+      submission_dir:
+        type: str
+        default: "."
+        info: "folder submitted from the session, relative to /home/student/workspace"
       terminal:
         type: bool
         default: true

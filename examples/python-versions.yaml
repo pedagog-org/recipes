@@ -6,7 +6,7 @@ name: Python Version Compatibility
 environment:
   os: ubuntu-22
   platform:
-    kind: interactive
+    kind: workspace
     params:
       extensions:
         install:

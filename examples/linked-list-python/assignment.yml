@@ -8,7 +8,7 @@ name: Linked List (Python)
 environment:
   os: ubuntu-22
   platform:
-    kind: interactive
+    kind: workspace
   toolchains:
     - python:3.12
 testing:

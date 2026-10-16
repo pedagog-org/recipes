@@ -3,7 +3,7 @@ name: Pointers and Memory
 environment:
   os: ubuntu-22
   platform:
-    kind: interactive
+    kind: workspace
     params:
       extensions:
         install:
