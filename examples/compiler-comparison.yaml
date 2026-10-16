@@ -16,7 +16,7 @@ name: Compiler Comparison
 environment:
   os: ubuntu-22
   platform:
-    kind: interactive
+    kind: workspace
   toolchains:
     - gcc:12+gdb:12
     - gcc:13+gdb:12+valgrind:3

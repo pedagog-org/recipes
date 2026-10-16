@@ -1,0 +1,8 @@
+# Students upload files or an archive; no session, so no code-server,
+# entrypoint or ports. Grading runs the test command in the image.
+platform: upload
+os: ubuntu-22
+
+hooks:
+  build:
+    steps: []
