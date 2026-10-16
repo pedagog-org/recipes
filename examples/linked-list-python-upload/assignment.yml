@@ -14,3 +14,8 @@ environment:
     - python:3.12
 testing:
   framework: pytest:1
+# What counts as a submission: Python files only (anything else is listed as
+# ignored on the receipt), and linked_list.py must be there.
+submission:
+  include: ["*.py"]
+  required: [linked_list.py]
