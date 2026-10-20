@@ -8,11 +8,11 @@ os: ubuntu-22
 # the system site-packages, using the python3 its parent toolchain put on PATH.
 ingredients:
   - output: pedagog-pytest-bundle.tar.gz
-    sha256: 3a6b7e0e36ada366b64d83aefcb5b91a6f33b9881d57b192293e9b6010c529c4
+    sha256: 0d8b0c6d3735154a5c5bea010196c56511827b06af595a51bd709d91f342f0e1
     github:
       repo: pedagog-org/python-pytest
       asset: "pedagog-pytest-*-bundle.tar.gz"
-      tag: v2.0.0
+      tag: v2.1.0
 steps:
   - name: Install pedagog-pytest 2
     run:
@@ -21,7 +21,7 @@ steps:
         if [ ! -f "$bundle" ]; then
           bundle=/tmp/pedagog-pytest-bundle.tar.gz
           curl -fsSL -o "$bundle" \
-            https://github.com/pedagog-org/python-pytest/releases/download/v2.0.0/pedagog-pytest-2.0.0-bundle.tar.gz
+            https://github.com/pedagog-org/python-pytest/releases/download/v2.1.0/pedagog-pytest-2.1.0-bundle.tar.gz
         fi
         mkdir -p /tmp/pedagog-pytest && tar -xzf "$bundle" -C /tmp/pedagog-pytest
         python3 -m venv --system-site-packages /opt/pedagog/pytest
