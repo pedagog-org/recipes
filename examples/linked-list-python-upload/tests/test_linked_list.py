@@ -36,7 +36,7 @@ class PopFront(Rubric):
 
 @rubric(PopFront, id="pop-front", name="pop_front")
 @number(3)
-@visibility(output=HIDDEN)
+@visibility(error=HIDDEN)
 def test_pop_front(scores: PopFront):
     items = LinkedList()
     items.append(1)

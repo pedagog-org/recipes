@@ -1,0 +1,31 @@
+id: pedagog-pytest
+version: "2"
+os: ubuntu-22
+# pedagog's pytest helper (github.com/pedagog-org/python-pytest): test metadata
+# decorators, results.yaml, process isolation, and /pedagog/bin/run-tests.
+# Version 2 writes results v2: score, feedback, stdout and error per test.
+# Installed offline from the release's wheel bundle into a venv that still sees
+# the system site-packages, using the python3 its parent toolchain put on PATH.
+ingredients:
+  - output: pedagog-pytest-bundle.tar.gz
+    sha256: 3a6b7e0e36ada366b64d83aefcb5b91a6f33b9881d57b192293e9b6010c529c4
+    github:
+      repo: pedagog-org/python-pytest
+      asset: "pedagog-pytest-*-bundle.tar.gz"
+      tag: v2.0.0
+steps:
+  - name: Install pedagog-pytest 2
+    run:
+      - |
+        bundle="$(vend pedagog-pytest-bundle.tar.gz)"
+        if [ ! -f "$bundle" ]; then
+          bundle=/tmp/pedagog-pytest-bundle.tar.gz
+          curl -fsSL -o "$bundle" \
+            https://github.com/pedagog-org/python-pytest/releases/download/v2.0.0/pedagog-pytest-2.0.0-bundle.tar.gz
+        fi
+        mkdir -p /tmp/pedagog-pytest && tar -xzf "$bundle" -C /tmp/pedagog-pytest
+        python3 -m venv --system-site-packages /opt/pedagog/pytest
+        /opt/pedagog/pytest/bin/pip install --no-index --find-links /tmp/pedagog-pytest/wheels pedagog-pytest
+        mkdir -p /pedagog/bin
+        ln -sf /opt/pedagog/pytest/bin/pedagog-run-tests /pedagog/bin/run-tests
+        rm -rf /tmp/pedagog-pytest /tmp/pedagog-pytest-bundle.tar.gz

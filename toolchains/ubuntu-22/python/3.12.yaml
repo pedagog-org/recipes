@@ -7,7 +7,7 @@ os: ubuntu-22
 # alongside; alternative priority = version, so the newest is the default.
 coexist: true
 addons:
-  pedagog-pytest: ["1"]
+  pedagog-pytest: ["1", "2"]
 steps:
   - name: Install add-apt-repository
     packages:
