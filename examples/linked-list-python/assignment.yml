@@ -12,4 +12,4 @@ environment:
   toolchains:
     - python:3.12
 testing:
-  framework: pytest:1
+  framework: pytest:2
