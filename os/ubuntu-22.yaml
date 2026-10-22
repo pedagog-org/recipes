@@ -25,18 +25,14 @@ hooks:
           - rm -rf /var/lib/apt/lists/*
 
   pkg:
-    # Run in the same step as every install: a cached install keeps the index it
-    # installed with, and one that runs again never uses the base image's
-    # (by then stale) index.
-    update:
-      steps:
-        - run:
-            - apt-get update
     install:
       args: [packages]
       steps:
+        # The index is refreshed in the same step: a step that runs again never
+        # installs from the base image's (by then stale) index, and a cached one
+        # keeps the index it installed with.
         - run:
-            - apt-get install -y {packages}
+            - apt-get update && apt-get install -y {packages}
     remove:
       args: [packages]
       steps:
