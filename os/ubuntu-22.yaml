@@ -28,8 +28,11 @@ hooks:
     install:
       args: [packages]
       steps:
+        # The index is refreshed in the same step: a step that runs again never
+        # installs from the base image's (by then stale) index, and a cached one
+        # keeps the index it installed with.
         - run:
-            - apt-get install -y {packages}
+            - apt-get update && apt-get install -y {packages}
     remove:
       args: [packages]
       steps:
